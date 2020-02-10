@@ -38,13 +38,6 @@
       </div>
     </div>
 
-    <script>
-      var manager = new THREE.LoadingManager();
-      manager.onLoad = function ( ) {
-        $(".loader-wrapper").fadeOut("slow");
-      };
-    </script>
-
     <script src="three.min.js"></script>
     <script>
     let scene, camera, renderer, stars, starGeo;
@@ -108,6 +101,12 @@
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
     }
+
+    var manager = new THREE.LoadingManager();
+    manager.onLoad = function ( ) {
+      $(".loader-wrapper").fadeOut("slow");
+    };
+
     init();
     
     </script>
