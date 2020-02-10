@@ -7,10 +7,10 @@
   </head>
   <body>
     <div class="text-box">
-      <div class="heading">To infinity and Beyond</div>
+      <div class="heading">this took a lot longer than i thought it would</div>
       <div class="button-wrapper">
-          <div class="button">Learn More</div>
-          <div class="button">Contact Us</div>
+          <div class="button" onclick="window.location.href = 'https://github.com/keatontang';" >my github</div>
+          <div class="button" onclick="window.location.href = 'https://redstapler.co/space-warp-background-effect-three-js/';">how i did this</div>
       </div>
     </div>
 
@@ -66,8 +66,8 @@
         p.velocity += p.acceleration
         p.y -= p.velocity;
         
-        if (p.y < -200) {
-          p.y = 200;
+        if (p.y < -100) {
+          p.y = 100;
           p.velocity = 0;
         }
       });
