@@ -48,10 +48,10 @@ canvas {
   right: 10px;
 }
 
-html,
-body {
-  background-color: #404456;
-}
+/*html,*/
+/*body {*/
+/*  background-color: #404456;*/
+/*}*/
 
 .loader-wrapper {
   width: 100%;
