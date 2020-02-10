@@ -31,12 +31,12 @@
           <div class="button" onclick="window.location.href = 'https://github.com/keatontang/personal-website';">source code</div>
       </div>
     </div>
-    <div class="loader-wrapper">
-      <div id="loader">
-        <div id="box"></div>
-        <div id="hill"></div>
-      </div>
-    </div>
+<!--    <div class="loader-wrapper">-->
+<!--      <div id="loader">-->
+<!--        <div id="box"></div>-->
+<!--        <div id="hill"></div>-->
+<!--      </div>-->
+<!--    </div>-->
 
     <script src="three.min.js"></script>
     <script>
@@ -44,9 +44,9 @@
 
     function init() {
 
-      let manager = new THREE.LoadingManager();
-
-      manager.onStart = function() {
+      // let manager = new THREE.LoadingManager();
+      //
+      // manager.onStart = function() {
 
         scene = new THREE.Scene();
 
@@ -83,12 +83,12 @@
         window.addEventListener("resize", onWindowResize, false);
 
         animate();
-      }
+      // }
 
-      manager.onLoad = function() {
-        $(".loader-wrapper").fadeOut("slow");
-        $(".body").fadeOut("slow");
-      }
+      // manager.onLoad = function() {
+      //   $(".loader-wrapper").fadeOut("slow");
+      //   $(".body").setAttribute("background-color", "transparent");
+      // }
 
     }
     function onWindowResize() {
