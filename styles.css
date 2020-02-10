@@ -48,6 +48,11 @@ canvas {
   right: 10px;
 }
 
+html,
+body {
+  background-color: #404456;
+}
+
 .loader-wrapper {
   width: 100%;
   height: 100%;
