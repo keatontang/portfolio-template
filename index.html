@@ -77,6 +77,10 @@
       scene.add(stars);
 
       window.addEventListener("resize", onWindowResize, false);
+      window.addEventListener("load", function () {
+        $(".loader-wrapper").fadeOut("slow");
+        $(".body").fadeOut("slow");
+      });
 
       animate(); 
     }
@@ -97,15 +101,10 @@
       });
       starGeo.verticesNeedUpdate = true;
       stars.rotation.y +=0.002;
-    
+
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
     }
-
-    var manager = new THREE.LoadingManager();
-    manager.onLoad = function ( ) {
-      $(".loader-wrapper").fadeOut("slow");
-    };
 
     init();
     
