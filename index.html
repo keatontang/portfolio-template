@@ -39,9 +39,10 @@
     </div>
 
     <script>
-      $(renderer).on("load", function(){
+      var manager = new THREE.LoadingManager();
+      manager.onLoad = function ( ) {
         $(".loader-wrapper").fadeOut("slow");
-      });
+      };
     </script>
 
     <script src="three.min.js"></script>
