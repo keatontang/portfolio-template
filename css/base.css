@@ -302,3 +302,57 @@ a.demo--current {
 		margin: 0;
 	}
 }
+
+.cd-nav-trigger {
+	transition: transform 0.5s;
+
+circle {
+	stroke: var(--cd-color-3);
+	transition: stroke-dashoffset 0.4s; // circle border animation
+}
+}
+
+.nav-is-open .cd-nav-trigger {
+	transform: rotate(180deg); // rotate trigger when navigation becomes visible
+
+								  circle {
+									  stroke-dashoffset: 0; // animate circle stroke
+								  transition: stroke-dashoffset 0.4s 0.3s;
+								  }
+}
+
+.cd-nav-trigger__icon {
+width: 22px;
+	height: 2px;
+	background-color: var(--color-white);
+	transition: transform 0.3s;
+
+.before, .after {
+			width: 100%;
+				height: 100%;
+				transition: transform 0.5s, width 0.5s, top .3s;
+			}
+
+.before {
+	 transform-origin: right top;
+	 transform: translateY(-6px);
+ }
+
+.after {
+	 transform-origin: right bottom;
+	 transform: translateY(6px);
+ }
+}
+
+.nav-is-open .cd-nav-trigger__icon::before,
+.nav-is-open .cd-nav-trigger__icon::after {
+width: 50%;
+}
+
+.nav-is-open .cd-nav-trigger__icon::before {
+	transform: rotate(45deg);
+}
+
+.nav-is-open .cd-nav-trigger__icon::after {
+	transform: rotate(-45deg);
+}
