@@ -4,7 +4,7 @@ Personal website used to play around with and display projects. The shapes are c
 
 ## Credits
 
-- [Decorative WebGLBackgrounds] (http://tympanus.net/Development/DecorativeBackgrounds/) by Louis Hoebregts
+- [Decorative WebGLBackgrounds](http://tympanus.net/Development/DecorativeBackgrounds/) by Louis Hoebregts
 - [three.js](https://threejs.org/)
 - [TweenMax](https://greensock.com/tweenmax)
 - [NOISE!](https://github.com/josephg/noisejs) by Seph Gentle
