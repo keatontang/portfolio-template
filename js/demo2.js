@@ -1,6 +1,11 @@
-var canvas = document.querySelector('#scene');
+var canvas = document.querySelector('canvas');
 var width = canvas.offsetWidth,
     height = canvas.offsetHeight;
+
+var colors = [
+    new THREE.Color(0x3c91ff),
+    new THREE.Color(0x96789f),
+    new THREE.Color(0x535353)];
 
 var renderer = new THREE.WebGLRenderer({
     canvas: canvas,
@@ -8,50 +13,82 @@ var renderer = new THREE.WebGLRenderer({
 });
 renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1);
 renderer.setSize(width, height);
-renderer.setClearColor(0x59c384);
+renderer.setClearColor(0x000000);
 
 var scene = new THREE.Scene();
 
+var raycaster = new THREE.Raycaster();
+raycaster.params.Points.threshold = 6;
+
+
 var camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 2000);
-camera.position.set(0, 0, 80);
+camera.position.set(0, 0, 350);
 
+var galaxy = new THREE.Group();
+scene.add(galaxy);
+
+// Create dots
 var loader = new THREE.TextureLoader();
-loader.crossOrigin = "Anonymous";
-var dotTexture = loader.load('img/dotTexture.png');
+loader.crossOrigin = "";
+var dotTexture = loader.load("img/dotTexture.png");
+var dotsAmount = 3000;
+var dotsGeometry = new THREE.Geometry();
+var positions = new Float32Array(dotsAmount * 3);
 
-var radius = 50;
-var sphereGeom = new THREE.IcosahedronGeometry(radius, 5);
-var dotsGeom = new THREE.Geometry();
-var bufferDotsGeom = new THREE.BufferGeometry();
-var positions = new Float32Array(sphereGeom.vertices.length * 3);
-for (var i = 0;i<sphereGeom.vertices.length;i++) {
-    var vector = sphereGeom.vertices[i];
-    animateDot(i, vector);
-    dotsGeom.vertices.push(vector);
+var sizes = new Float32Array(dotsAmount);
+var colorsAttribute = new Float32Array(dotsAmount * 3);
+for (var i = 0; i < dotsAmount; i++) {
+    var vector = new THREE.Vector3();
+
+    vector.color = Math.floor(Math.random() * colors.length);
+    vector.theta = Math.random() * Math.PI * 2;
+    vector.phi =
+        (1 - Math.sqrt(Math.random())) *
+        Math.PI /
+        2 *
+        (Math.random() > 0.5 ? 1 : -1);
+
+    vector.x = Math.cos(vector.theta) * Math.cos(vector.phi);
+    vector.y = Math.sin(vector.phi);
+    vector.z = Math.sin(vector.theta) * Math.cos(vector.phi);
+    vector.multiplyScalar(120 + (Math.random() - 0.5) * 5);
+    vector.scaleX = 5;
+
+    if (Math.random() > 0.5) {
+        moveDot(vector, i);
+    }
+    dotsGeometry.vertices.push(vector);
     vector.toArray(positions, i * 3);
+    colors[vector.color].toArray(colorsAttribute, i*3);
+    sizes[i] = 5;
 }
 
-function animateDot(index, vector) {
-        TweenMax.to(vector, 4, {
-            x: 0,
-            z: 0,
-            ease:Back.easeOut,
-            delay: Math.abs(vector.y/radius) * 2,
-            repeat:-1,
-            yoyo: true,
-            yoyoEase:Back.easeOut,
-            onUpdate: function () {
-                updateDot(index, vector);
-            }
-        });
-}
-function updateDot(index, vector) {
-        positions[index*3] = vector.x;
-        positions[index*3+2] = vector.z;
+function moveDot(vector, index) {
+    var tempVector = vector.clone();
+    tempVector.multiplyScalar((Math.random() - 0.5) * 0.2 + 1);
+    TweenMax.to(vector, Math.random() * 3 + 3, {
+        x: tempVector.x,
+        y: tempVector.y,
+        z: tempVector.z,
+        yoyo: true,
+        repeat: -1,
+        delay: -Math.random() * 3,
+        ease: Power0.easeNone,
+        onUpdate: function () {
+            attributePositions.array[index*3] = vector.x;
+            attributePositions.array[index*3+1] = vector.y;
+            attributePositions.array[index*3+2] = vector.z;
+        }
+    });
 }
 
+var bufferWrapGeom = new THREE.BufferGeometry();
 var attributePositions = new THREE.BufferAttribute(positions, 3);
-bufferDotsGeom.addAttribute('position', attributePositions);
+bufferWrapGeom.addAttribute('position', attributePositions);
+var attributeSizes = new THREE.BufferAttribute(sizes, 1);
+bufferWrapGeom.addAttribute('size', attributeSizes);
+var attributeColors = new THREE.BufferAttribute(colorsAttribute, 3);
+bufferWrapGeom.addAttribute('color', attributeColors);
 var shaderMaterial = new THREE.ShaderMaterial({
     uniforms: {
         texture: {
@@ -62,13 +99,80 @@ var shaderMaterial = new THREE.ShaderMaterial({
     fragmentShader: document.getElementById("wrapFragmentShader").textContent,
     transparent:true
 });
-var dots = new THREE.Points(bufferDotsGeom, shaderMaterial);
-scene.add(dots);
+var wrap = new THREE.Points(bufferWrapGeom, shaderMaterial);
+scene.add(wrap);
 
+// Create white segments
+var segmentsGeom = new THREE.Geometry();
+var segmentsMat = new THREE.LineBasicMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.3,
+    vertexColors: THREE.VertexColors
+});
+for (i = dotsGeometry.vertices.length - 1; i >= 0; i--) {
+    vector = dotsGeometry.vertices[i];
+    for (var j = dotsGeometry.vertices.length - 1; j >= 0; j--) {
+        if (i !== j && vector.distanceTo(dotsGeometry.vertices[j]) < 12) {
+            segmentsGeom.vertices.push(vector);
+            segmentsGeom.vertices.push(dotsGeometry.vertices[j]);
+            segmentsGeom.colors.push(colors[vector.color]);
+            segmentsGeom.colors.push(colors[vector.color]);
+        }
+    }
+}
+var segments = new THREE.LineSegments(segmentsGeom, segmentsMat);
+galaxy.add(segments);
+
+var hovered = [];
+var prevHovered = [];
 function render(a) {
-    dots.geometry.verticesNeedUpdate = true;
-    dots.geometry.attributes.position.needsUpdate = true;
+    var i;
+    dotsGeometry.verticesNeedUpdate = true;
+    segmentsGeom.verticesNeedUpdate = true;
+
+    raycaster.setFromCamera( mouse, camera );
+    var intersections = raycaster.intersectObjects([wrap]);
+    hovered = [];
+    if (intersections.length) {
+        for(i = 0; i < intersections.length; i++) {
+            var index = intersections[i].index;
+            hovered.push(index);
+            if (prevHovered.indexOf(index) === -1) {
+                onDotHover(index);
+            }
+        }
+    }
+    for(i = 0; i < prevHovered.length; i++){
+        if(hovered.indexOf(prevHovered[i]) === -1){
+            mouseOut(prevHovered[i]);
+        }
+    }
+    prevHovered = hovered.slice(0);
+    attributeSizes.needsUpdate = true;
+    attributePositions.needsUpdate = true;
     renderer.render(scene, camera);
+}
+
+function onDotHover(index) {
+    dotsGeometry.vertices[index].tl = new TimelineMax();
+    dotsGeometry.vertices[index].tl.to(dotsGeometry.vertices[index], 1, {
+        scaleX: 10,
+        ease: Elastic.easeOut.config(2, 0.2),
+        onUpdate: function() {
+            attributeSizes.array[index] = dotsGeometry.vertices[index].scaleX;
+        }
+    });
+}
+
+function mouseOut(index) {
+    dotsGeometry.vertices[index].tl.to(dotsGeometry.vertices[index], 0.4, {
+        scaleX: 5,
+        ease: Power2.easeOut,
+        onUpdate: function() {
+            attributeSizes.array[index] = dotsGeometry.vertices[index].scaleX;
+        }
+    });
 }
 
 function onResize() {
@@ -77,19 +181,15 @@ function onResize() {
     width = canvas.offsetWidth;
     height = canvas.offsetHeight;
     camera.aspect = width / height;
-    camera.updateProjectionMatrix();  
+    camera.updateProjectionMatrix();
     renderer.setSize(width, height);
 }
 
-var mouse = new THREE.Vector2(0.8, 0.5);
+var mouse = new THREE.Vector2(-100,-100);
 function onMouseMove(e) {
-    mouse.x = (e.clientX / window.innerWidth) - 0.5;
-    mouse.y = (e.clientY / window.innerHeight) - 0.5;
-    TweenMax.to(dots.rotation, 4, {
-        x : (mouse.y * Math.PI * 0.5),
-        z : (mouse.x * Math.PI * 0.2),
-        ease:Power1.easeOut
-    });
+    var canvasBounding = canvas.getBoundingClientRect();
+    mouse.x = ((e.clientX - canvasBounding.left) / width) * 2 - 1;
+    mouse.y = -((e.clientY - canvasBounding.top) / height) * 2 + 1;
 }
 
 TweenMax.ticker.addEventListener("tick", render);
