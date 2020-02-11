@@ -273,12 +273,12 @@ a.demo--current {
 		flex-direction: column;
 		height: auto;
 	}
-	.content--fixed {
-		position: relative;
-		z-index: 1000;
-		display: block;
-		padding: 0.85em;
-	}
+	/*.content--fixed {*/
+	/*	position: relative;*/
+	/*	z-index: 1000;*/
+	/*	display: block;*/
+	/*	padding: 0.85em;*/
+	/*}*/
 	.content:not(.content--fixed) {
 		margin-bottom: 6em;
 	}
