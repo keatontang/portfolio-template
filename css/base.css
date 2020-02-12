@@ -143,7 +143,7 @@ main {
 	/* align-self: end; */
 	position: fixed;
 	bottom: 0;
-	right: 0;
+	left: 0;
 	grid-area: github;
 	justify-self: start;
 	color: #507CB5;
