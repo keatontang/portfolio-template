@@ -10,6 +10,7 @@ Personal website used to play around with and display projects. The shapes are c
 - [NOISE!](https://github.com/josephg/noisejs) by Seph Gentle
 - [Nexa Bold font](https://www.fontspring.com/fonts/fontfabric/nexa/nexa-bold-free) by Fontfabric
 - [Full-screen Pushing Navigation](https://github.com/CodyHouse/full-screen-pushing-navigation) by CodyHouse
+- [Color Calculator] (https://www.sessions.edu/color-calculator/) 
 
 
 
