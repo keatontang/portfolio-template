@@ -140,14 +140,17 @@ main {
 
 .github {
 	display: block;
-	align-self: end;
+	/* align-self: end; */
+	position: absolute;
+	bottom: 0;
+	right: 0;
 	grid-area: github;
 	justify-self: start;
 	color: #507CB5;
 }
 
 .demos {
-	position: relative;
+	position: absolute;
 	display: block;
 	align-self: end;
 	text-align: center;
