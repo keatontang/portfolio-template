@@ -141,7 +141,7 @@ main {
 .github {
 	display: block;
 	/* align-self: end; */
-	position: absolute;
+	position: fixed;
 	bottom: 0;
 	right: 0;
 	grid-area: github;
