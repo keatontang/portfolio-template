@@ -143,6 +143,7 @@ main {
 	align-self: end;
 	grid-area: github;
 	justify-self: start;
+	color: #507CB5;
 }
 
 .demos {
