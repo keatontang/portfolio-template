@@ -1,6 +1,6 @@
-# personal-website
+# portfolio-template
 
-Personal website used to play around with and display projects. The shapes are created with Three.js and animated with the TweenMax library.
+Template for a personal portfolio intended for use to play around with and display projects. The shapes are created with Three.js and animated with the TweenMax library.
 
 ## Credits
 
